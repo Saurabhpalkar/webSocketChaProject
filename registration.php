@@ -56,7 +56,7 @@ $success_msg = '';
                                 <input type="password" name="password" id="password" class="form-control" required>
                             </div>
                             <button type="submit" value="register" name="register" id="registerBtn" class="btn btn-primary">Submit</button>
-                            <a href="login.php" class="btn btn-success">login</a>
+                            <a href="login.php">Already register? Login Here</a>
                         </form>
                     </div>
                 </div>

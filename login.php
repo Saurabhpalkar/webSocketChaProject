@@ -23,7 +23,7 @@
             <div class="col-md-6">
                 <div class="card mt-5">
                     <div class="card-header">
-                        Login Form
+                        Chat Application Login Form
                     </div>
                     <div class="card-body">
                         <form id="loginForm" method="POST" action="process_login.php">
@@ -36,7 +36,7 @@
                                 <input type="password" name="password" id="password" class="form-control" required>
                             </div>
                             <button type="submit" name="login_btn" class="btn btn-primary">Login</button>
-                            <a href="logout.php">logout</a>
+                            <a href="registration.php"> Create New Account</a>
                         </form>
                     </div>
                 </div>

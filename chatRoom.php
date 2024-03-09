@@ -25,14 +25,24 @@ if (!isset($_SESSION['user_data'])) {
             /* Adjust the height as needed */
         }
         #message_area{
-            height:25rem;
-            background-color: lightgray;
+            min-height: 25rem;
+            background-color: #3e3939;
         }
+        /* .date {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+        }*/
+        small{
+            float: inline-end;
+            padding-top: 20px;
+        } 
     </style>
 </head>
 
 <body>
     <div class="container-fluid">
+        
         <div class="row">
             <div class="col-md-3 user-profile">
                 <h4>User Profile</h4>
@@ -49,8 +59,11 @@ if (!isset($_SESSION['user_data'])) {
             <!-- Main Content Area -->
             <div class="col-md-9 container" style="padding: 2rem 5rem 3rem 5rem;">
                 <div class="card">
-                    <div class="class-header text-primary text-center" style="background-color: lightblue;"><h4>Chat Room</h4></div>
-                    <div class="card-body" id="message_area" ></div>
+                    <div class="class-header text-white text-center" style="background-color: #0e0e0e;"><h4>Chat Room</h4></div>
+                    <div class="card-body" id="message_area" >
+                       
+                        
+                    </div>
                 </div>
                 <form action="POST" id="chatRoomForm">
                     <div class="input-group mb-3">    
@@ -82,17 +95,33 @@ if (!isset($_SESSION['user_data'])) {
             conn.onmessage = function(e) {
                 console.log(e.data);
                 var data = JSON.parse(e.data);
-                console.log(data.msg);
-                var row_class = 'row justify-content-start';
-                var bg_class  = 'text-dark alert-light';
-                var html_data = '<div class="' + row_class + '"><div class="col-sm-10"><div class="shadow-sm alert ' + bg_class + '">' + data.msg + '</div></div></div>';
+                console.log(data);
+                var row_class = '';
+                    var bg_class = '';
+                    var align_class = '';
+                    if (data.from == 'Me') {
+                        row_class = 'float-end';
+                        bg_class = 'alert-light';
+                        float_class = 'float-right';
+                        // align_class = 'text-right';
+                    } else {
+                        row_class = ' float-end';
+                        bg_class = 'alert-success';
+                        float_class = 'float-left';
+
+                        // align_class = 'text-left';
+                    }
+                    // var html_data = ' <div class=" bg-success col-sm-7  justify-content-end"> <b>' + data.from + '-</b><p>'+ data.msg +'<small>' + data.dt +'</small></p></div>';
+                    var html_data = '<div col-sm-12><div class="'+float_class+' col-sm-7"><div class="col-sm-12 shadow-sm alert ' +
+                        bg_class + ' ' + align_class + ' '+float_class+'" style="width:fit-content; padding: inherit;"> <div class="' + row_class + '"> <b>' + data.from + ' </b> <br> ' + data.msg + '<small class="date"><i>' + data.dt +
+                        '</i></small></div></div></div></div>';
                 $('#message_area').append(html_data);
-                $('#chat_msg').html('')
+                $('#chat_msg').val('')
             };
             $('#chatRoomForm').on('submit', function(event){
                 event.preventDefault()
                 var user_id = $('#login_user_id').val() ;
-                var msg= $('#chat_msg').val();
+                var msg= $('#chat_msg').val().trim();
 
                 // send data to WebSocket
                 var data = {
@@ -100,7 +129,12 @@ if (!isset($_SESSION['user_data'])) {
                     msg : msg
                 }
                 conn.send(JSON.stringify(data));
+                
             })
+            // $('#chat_msg').on('input', function() {
+            //     $(this).css('width', 'auto');
+            //     $(this).css('width', this.scrollWidth + 'px');
+            // });
         });
         // function logout() {
         //     // Perform logout actions here, such as clearing session data, etc.
