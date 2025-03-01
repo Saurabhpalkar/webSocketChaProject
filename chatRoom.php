@@ -4,6 +4,11 @@ session_start();
 if (!isset($_SESSION['user_data'])) {
     header("location:login.php");
 }
+require("database/chat_room_msgs.php");
+$chat_obj = new user_chat_messages;
+$chat_messages = $chat_obj->fetchAllChat();
+// echo "<pre>";
+// var_dump($chat_messages);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -61,7 +66,25 @@ if (!isset($_SESSION['user_data'])) {
                 <div class="card">
                     <div class="class-header text-white text-center" style="background-color: #0e0e0e;"><h4>Chat Room</h4></div>
                     <div class="card-body" id="message_area" >
-                       
+                       <?php
+                        foreach($chat_messages as $value){ 
+                            if(isset($_SESSION['user_data'][$value['user_id']])){
+                                $row_class = 'float-end';
+                                $bg_class = 'alert-light';
+                                $float_class = 'float-right';
+                                $from = "Me";
+                                // $align_class = 'text-right';
+                            } else {
+                                $from = $value['user_name'];
+                                $row_class = ' float-end';
+                                $bg_class = 'alert-success';
+                                $float_class = 'float-left';
+
+                            }
+                            echo'<div col-sm-12><div class="' .$float_class.' col-sm-7"><div class="col-sm-12 shadow-sm alert ' .$bg_class .  ' ' .$float_class.'" style="width:fit-content; padding: inherit;"> <div class="' . $row_class . '">
+                             <b>' . $from . ' </b> <br> ' . $value['messages'] . '<small class="date"><i>' . $value['created_on'] .
+                            '</i></small></div></div></div></div>';
+                     } ?>
                         
                     </div>
                 </div>
@@ -93,9 +116,8 @@ if (!isset($_SESSION['user_data'])) {
             };
 
             conn.onmessage = function(e) {
-                console.log(e.data);
+               
                 var data = JSON.parse(e.data);
-                console.log(data);
                 var row_class = '';
                     var bg_class = '';
                     var align_class = '';
@@ -118,6 +140,7 @@ if (!isset($_SESSION['user_data'])) {
                 $('#message_area').append(html_data);
                 $('#chat_msg').val('')
             };
+            $('#message_area').scrollTop($('#message_area')[0].scrollHeight);
             $('#chatRoomForm').on('submit', function(event){
                 event.preventDefault()
                 var user_id = $('#login_user_id').val() ;
@@ -129,6 +152,8 @@ if (!isset($_SESSION['user_data'])) {
                     msg : msg
                 }
                 conn.send(JSON.stringify(data));
+            $('#message_area').scrollTop($('#message_area')[0].scrollHeight);
+
                 
             })
             // $('#chat_msg').on('input', function() {

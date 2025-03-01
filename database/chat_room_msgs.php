@@ -11,6 +11,8 @@ class user_chat_messages{
     }
     function setUserId($user_id){
         $this->user_id = $user_id;
+        // get_data_by_user_id
+        // setUserId
     }
     function getUserId(){
         return $this->user_id;
@@ -36,6 +38,14 @@ class user_chat_messages{
           }else{
             echo "insertion";
           }
+    }
+    function fetchAllChat(){
+        $query = "SELECT cm.*, ct.user_name FROM chat_user_table ct
+                INNER JOIN chat_room_msgs cm ON cm.user_id = ct.id";
+        $statement = $this->connect->prepare($query);
+        $statement->execute();
+        return $statement->fetchAll(PDO::FETCH_ASSOC);
+
     }
     
 }
